@@ -36,14 +36,14 @@
 
 std::string target_string =
     "SolidBox {"
-    "  translation  %7.4f %7.4f 0.0005"
+    "  translation  %7.4f %7.4f 0.00005"
     "  rotation 0 0 1 0"
     "      appearance PBRAppearance {"
     "        baseColor %7.4f %7.4f %7.4f"
     "        roughness 0.5"
     "        metalness 0"
     "      }"
-      "        size 0.14 0.14 0.001"
+      "        size 0.14 0.14 0.0001"
     "  name \"target\""
     "}";
 
