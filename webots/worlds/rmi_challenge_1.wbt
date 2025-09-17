@@ -42,15 +42,14 @@ RectangleArena {
 }
 DEF EPUCK E-puck {
   translation 0.225 0.825 0
-  rotation 0 0 1 0
-  controller "my_controller"
+  controller "C1_pClient"
   window "botstudio"
-  camera_width 40
-  camera_height 1
+  camera_width 32
+  camera_height 32
   camera_rotation 0 1 0 0.47
 }
 DEF SUPERVISOR Robot {
   name "supervisor"
-  controller "supervisor_controller"
+  controller "C1_controller"
   supervisor TRUE
 }
