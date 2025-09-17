@@ -289,8 +289,7 @@ bool cbWall::isInside(const cbPoint &p)
 	
 	bool inside=false;
 
-	int j;
-  	for (int i = 0; i < n; i++) {
+  	for (int i = 0; i < (int)n; i++) {
 		cbPoint cornerI = corners[i];
 		cbPoint cornerJ = corners[i-1<0?n-1:i-1];
     	if ( ((cornerI.Y()>p.Y()) != (cornerJ.Y()>p.Y())) &&

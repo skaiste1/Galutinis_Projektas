@@ -21,15 +21,11 @@
 #define _CB_LAB_HANDLER_
 
 #include <qxml.h>
+#include <webots/Supervisor.hpp>
 
-#include "cbpoint.h"
+#include "cblab.h"
 
 class QString;
-
-class cbLab;
-class cbWall;
-class cbBeacon;
-class cbTarget;
 
 /**
  * SAX parser of labirinth file
@@ -42,16 +38,16 @@ public:
     bool startElement( const QString&, const QString&, const QString& , const QXmlAttributes& );
     bool endElement( const QString&, const QString&, const QString& );
 	void setDocumentLocator(QXmlLocator *);
+    void setChildrenField(webots::Field *field);
 
-	/* extra functions */
-	cbLab *parsedLab();
+    cbLab *getLab() { return lab; }
 
-private:
-	cbLab *lab;
-	cbWall *wall;
-	cbBeacon *beacon;
-	cbTarget *target;
-	cbPoint point;
+
+private:    
+    webots::Field *children_field;
+    cbLab *lab;
+    cbWall *wall;
+    int target_id=0;
 };     
 
 #endif

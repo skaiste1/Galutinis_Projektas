@@ -48,6 +48,8 @@ public:
 	inline double distance(cbPoint *pt) { return distance(*pt); }
 	double distance(double, double);
 
+	double length(void);
+
 	double angle(void);
 	double angle(cbPoint &);
 	inline double angle(cbPoint *pt) { return angle(*pt); }

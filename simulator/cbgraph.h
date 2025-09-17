@@ -21,6 +21,9 @@
 #ifndef CBGRAPH_H
 #define CBGRAPH_H
 
+#include <stdio.h>
+#include <math.h>
+
 /**
   *@author Nuno Lau, Artur Pereira & Andreia Melo
   */

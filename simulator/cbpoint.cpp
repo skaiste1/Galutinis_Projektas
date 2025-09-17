@@ -76,6 +76,11 @@ double cbPoint::distance(double px, double py)
 	return sqrt(xx*xx + yy*yy);
 }
 
+double cbPoint::length(void)
+{
+	return sqrt(x*x + y*y);
+}
+
 double cbPoint::angle(void)
 {
 	if (x == 0.0) return (y > 0.0) ? M_PI/2.0 : -M_PI/2;

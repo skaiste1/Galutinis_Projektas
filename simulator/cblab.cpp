@@ -20,7 +20,7 @@
 
 #include "cbbeacon.h"
 #include "cbtarget.h"
-#include "cbrobot.h"
+//#include "cbrobot.h"
 #include "cblab.h"
 
 #include <string.h>
@@ -31,11 +31,15 @@
 
 #include <algorithm>
 
+#define M_PI 3.14159265358979323846
+#define ROBOT_RADIUS 0.5 // radius of the robot (used in reachableRobot)
+
 cbLab::cbLab(void)
 {
 	/* init attributes */
 	name = "NO NAMED LAB";
-	height = width = 16.0;
+	height = 7*0.15;
+	width =  14*0.15;
 
 	/* make border wall and add it to walls */
 	cbWall *border = new cbWall;
@@ -249,8 +253,8 @@ bool cbLab::reachable(cbPoint i,cbPoint f)
     distWall=wallDistance(i,dirIF);       
 
 //    fprintf(stderr,"reach i(%5.3f,%5.3f),f(%5.3f,%5.3f) dist=%5.3f angle=%5.3f"
-//		   " distWall=%5.3f\n",
-//		   i.X(),i.Y(),f.X(),f.Y(),distIF,dirIF*180.0/M_PI,distWall);
+// 		   " distWall=%5.3f\n",
+// 		   i.X(),i.Y(),f.X(),f.Y(),distIF,dirIF*180.0/M_PI,distWall);
     
     if(distWall>=0.0 && distWall < distIF)
            return false;

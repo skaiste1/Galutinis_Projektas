@@ -1,54 +1,33 @@
 
-set(sim_SRC
-    # Source
-    cbactionhandler.cpp
-    cbbeacon.cpp
-    cbbutton.cpp
-    cbclient.cpp
-    cbcontrolpanel.cpp
-    cbgraph.cpp
-    cbgrid.cpp
-    cbgridhandler.cpp
-    cblab.cpp
-    cblabdialog.cpp
-    cblabhandler.cpp
-    cbmanagerobots.cpp
-    cbmotor.cpp
-    cbpanel.cpp
-    cbparamdialog.cpp
-    cbparameters.cpp
-    cbparamhandler.cpp
-    cbpoint.cpp
-    cbposition.cpp
-    cbreceptionhandler.cpp
-    cbreceptionist.cpp
-    cbrobotaction.cpp
-    cbrobotbeacon.cpp
-    cbrobot.cpp
-    cbrobotinfo.cpp
-    cbsensor.cpp
-    cbsimulator.cpp
-    cbsimulatorGUI.cpp
-    cbtarget.cpp
-    cbutils.cpp
-    cbview.cpp
-    cbviewhandler.cpp
-    cbwall.cpp
-    simulator.cpp
-    # Forms
-    cbcontrolpanel.ui
-    cblabdialog.ui
-    cbmanagerobots.ui
-    cbparamdialogbase.ui
-    cbrobotinfo.ui
-    cbsimulatorGUI.ui
-    # Resources
-    default.qrc
+# --- Find Webots ---
+# Try to find the Supervisor.hpp file to determine the include directory
+find_path(WEBOTS_INCLUDE_DIR
+    NAMES webots/Supervisor.hpp
+    HINTS /usr/local/include /usr/local/webots/include/controller/cpp # Add common installation paths as hints
+    PATH_SUFFIXES webots
+    DOC "Directory containing Webots headers"
 )
 
-add_executable(simulator ${sim_SRC})
+if(NOT WEBOTS_INCLUDE_DIR)
+    message(FATAL_ERROR "Webots include directory not found. Please ensure Webots is installed and its include path is accessible.")
+endif()
 
-target_include_directories(simulator PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(simulator Qt5::Widgets Qt5::Network Qt5::Xml)
+message(STATUS "Webots include directory found: ${WEBOTS_INCLUDE_DIR}")
 
-set_target_properties(simulator PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+set(sim_SRC
+    # Source
+    cbbeacon.cpp
+    cbgraph.cpp
+    cblab.cpp
+    cblabhandler.cpp
+    cbpoint.cpp
+    cbtarget.cpp
+    cbwall.cpp
+)
+
+add_library(cbwebots SHARED ${sim_SRC})
+
+target_include_directories(cbwebots PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${WEBOTS_INCLUDE_DIR})
+target_link_libraries(cbwebots Qt5::Widgets Qt5::Network Qt5::Xml)
+
+set_target_properties(cbwebots PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")

@@ -20,7 +20,7 @@
 
 #include "cbpoint.h"
 #include "cblab.h"
-#include "cbrobot.h"
+//#include "cbrobot.h"
 #include "cbgraph.h"
 
 // cNodebLinks
@@ -39,6 +39,8 @@
 #endif
 
 #endif
+
+#define ROBOT_RADIUS 0.07
 
 
 #include <algorithm>
@@ -131,14 +133,14 @@ void cbGraph::addLink(cbNode from, cbNode to, double dist)
 
     f=findNode(from);
     if(f==-1) {
-//       fprintf(stderr,"adding node from x=%f y=%f\n", from.pos().X(),from.pos().Y());
+       fprintf(stderr,"adding node from x=%f y=%f\n", from.pos().X(),from.pos().Y());
        addNode(from);
        f=nodes.size()-1;
     }
 
     t=findNode(to);
     if(t==-1) {
-//       fprintf(stderr,"adding node to x=%f y=%f\n", to.pos().X(),to.pos().Y());
+       fprintf(stderr,"adding node to x=%f y=%f\n", to.pos().X(),to.pos().Y());
        addNode(to);
        t=nodes.size()-1;
     }
@@ -270,7 +272,7 @@ int cbGraph::findNode(cbNode node)
     unsigned int n;
 
     for(n=0;n<nodes.size();n++)
-        if(node.pos()==nodes[n].pos()) return n;
+        if((node.pos()-nodes[n].pos()).length() < 1e-6 ) return n;
     return -1;
 }
 
