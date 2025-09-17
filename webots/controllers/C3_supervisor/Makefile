@@ -39,8 +39,7 @@
 ###
 ### ---- C++ Sources ----
 ### if your program uses several C++ source files:
-#CXX_SOURCES = supervisor_controller.cpp cblabhandler.cpp cblab.cpp cbwall.cpp cbtarget.cpp cbbeacon.cpp cbpoint.cpp
-CXX_SOURCES = C1_controller.cpp
+CXX_SOURCES = C3_supervisor.cpp 
 ###
 ### ---- Compilation options ----
 ### if special compilation flags are necessary:
@@ -50,7 +49,6 @@ CFLAGS = -fPIC -Wno-unused-result -I/usr/include/x86_64-linux-gnu/qt5/QtCore/ -I
 ### ---- Linked libraries ----
 ### if your program needs additional libraries:
 ### INCLUDE = -I"/my_library_path/include"
-#LIBRARIES = -L/usr/lib/x86_64-linux-gnu/ -lQt5Core -lQt5Xml
 LIBRARIES = -L/usr/lib/x86_64-linux-gnu/ -lQt5Core -lQt5Xml -L../../../build/simulator -lcbwebots -Wl,-rpath=../../../build/simulator
 ###
 ### ---- Linking options ----

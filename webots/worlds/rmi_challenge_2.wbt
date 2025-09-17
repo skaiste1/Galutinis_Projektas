@@ -56,6 +56,6 @@ DEF EPUCK E-puck {
 }
 DEF SUPERVISOR Robot {
   name "supervisor"
-  controller "C2_controller"
+  controller "C2_supervisor"
   supervisor TRUE
 }

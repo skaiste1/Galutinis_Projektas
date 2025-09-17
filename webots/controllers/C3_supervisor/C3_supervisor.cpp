@@ -51,24 +51,15 @@ struct cell_t getRobotCell() {
 
 void determine_lab_map_centered_on_robot_initial_pos(cbLab *lab)
 {
-    fprintf(stderr,"determine_lab_map\n");
     int  cells_width  = int(lab->Width()/PATHCUBESIZE+0.5);
     int  cells_height = int(lab->Height()/PATHCUBESIZE+0.5);
     int  lmap_width   = cells_width*4-1;
     int  lmap_height  = cells_height*4-1;
     char lmap[lmap_height][lmap_width];
 
-    fprintf(stderr,"determine_lab_map %d %d\n", cells_width, cells_height);
-
     memset(lmap,' ',sizeof(lmap));
 
-    //debug
-
-    fprintf(stderr,"determine_lab_map getInitPos\n");
-
     struct cell_t initCell = getRobotCell();;
-
-    fprintf(stderr,"initCell %d %d\n", initCell.x, initCell.y);
 
     // find vertical walls
     for(int cy = 0; cy < cells_height; cy++) {
@@ -212,15 +203,6 @@ void determine_lab_map_centered_on_robot_initial_pos(cbLab *lab)
 
     cbGraph grLab;
 
-    // add nodes
-    /*for(float x = 1.0; x < lab->Width(); x+=2.0) {
-        for(float y = 1.0; y < lab->Height(); y+=2.0) {
-            cbPoint cellCenter(x,y);
-            grLab.addNode(cbNode(cellCenter,MAXINT,MAXINT));
-        }
-    }
-    */
-
     // add horizontal links
     for(float x = PATHCUBESIZE*0.5; x < lab->Width()-PATHCUBESIZE; x+=PATHCUBESIZE) {
         for(float y = PATHCUBESIZE*0.5; y < lab->Height(); y+=PATHCUBESIZE) {
@@ -248,10 +230,10 @@ void determine_lab_map_centered_on_robot_initial_pos(cbLab *lab)
     }
 
     //// DEBUG  
-    cbPoint from(0.225,0.825);
-    cbPoint to  (0.375,0.825);
-    fprintf(stderr, "dist is %f\n", grLab.dist (cbNode(from,MAXINT,MAXINT),
-                                               cbNode(to   ,MAXINT,MAXINT)));
+    // cbPoint from(0.225,0.825);
+    // cbPoint to  (0.375,0.825);
+    // fprintf(stderr, "dist is %f\n", grLab.dist (cbNode(from,MAXINT,MAXINT),
+                                               // cbNode(to   ,MAXINT,MAXINT)));
 
 
     // store distances between targets
@@ -266,7 +248,7 @@ void determine_lab_map_centered_on_robot_initial_pos(cbLab *lab)
                                     cbNode(lab->Target(bf)->Center(), MAXINT, MAXINT));
             targetDists[bi][bf]=dist;
             targetDists[bf][bi]=dist;
-            fprintf(stderr,"distance from targets %d -> %d = %f\n", bi, bf, dist);
+            //fprintf(stderr,"distance from targets %d -> %d = %f\n", bi, bf, dist);
         }
     }
 

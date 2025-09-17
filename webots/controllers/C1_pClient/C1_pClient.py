@@ -31,6 +31,10 @@ rightMotor.setPosition(float('inf'))
 leftMotor.setVelocity(cruiseVelocity)
 rightMotor.setVelocity(cruiseVelocity)
 
+camera = robot.getDevice("camera")
+camera.enable(timeStep)
+
+
 near_front = 74
 near_side = 71
 
@@ -57,38 +61,3 @@ while robot.step(timeStep) != -1:
         leftMotor.setVelocity(cruiseVelocity)
         rightMotor.setVelocity(cruiseVelocity)
 
-
-
-
-# get the time step of the current world.
-#timestep = int(robot.getBasicTimeStep())
-
-# You should insert a getDevice-like function in order to get the
-# instance of a device of the robot. Something like:
-#motorR = robot.getDevice('right wheel motor')
-#motorL = robot.getDevice('left wheel motor')
-#ds = robot.getDevice('dsname')
-#ds.enable(timestep)
-
-#motorR.setPosition(float('inf'))
-#motorL.setPosition(float('inf'))
-
-
-# Main loop:
-# - perform simulation steps until Webots is stopping the controller
-#while robot.step(timestep) != -1:
-    # Read the sensors:
-    # Enter here functions to read sensor data, like:
-   # val = ds.getValue()
-
-    # Process sensor data here.
-
-    # Enter here functions to send actuator commands, like:
-#    motorR.setVelocity(6.0)
-#    motorL.setVelocity(2.0)
-
-
-
-    #print('comm')
-
-# Enter here exit cleanup code.
