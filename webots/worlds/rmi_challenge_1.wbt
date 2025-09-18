@@ -31,11 +31,6 @@ RectangleArena {
   }
   wallHeight 0.05
   wallAppearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/samples/curriculum/worlds/textures/arena_wall.jpg"
-      ]
-    }
     roughness 1
     metalness 0
   }

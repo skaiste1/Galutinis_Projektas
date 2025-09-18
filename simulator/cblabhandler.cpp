@@ -35,17 +35,34 @@
 
 
 std::string target_string =
-    "SolidBox {"
-    "  translation  %7.4f %7.4f 0.00005"
-    "  rotation 0 0 1 0"
-    "      appearance PBRAppearance {"
-    "        baseColor %7.4f %7.4f %7.4f"
-    "        roughness 0.5"
-    "        metalness 0"
-    "      }"
-      "        size 0.14 0.14 0.0001"
-    "  name \"target\""
-    "}";
+"Transform {"
+"  translation  %7.4f %7.4f 0.00005"
+"  rotation 0 0 1 0"
+"  children ["
+"    Shape {"
+"      appearance PBRAppearance {"
+"        baseColor %7.4f %7.4f %7.4f"
+"        roughness 0.5"
+"        metalness 0"
+"      }"
+"      geometry Box {"
+"        size 0.14 0.14 0.0001"
+"      }"
+"    }"
+"  ]"
+"}";
+
+    // "SolidBox {"
+    // "  translation  %7.4f %7.4f 0.00005"
+    // "  rotation 0 0 1 0"
+    // "      appearance PBRAppearance {"
+    // "        baseColor %7.4f %7.4f %7.4f"
+    // "        roughness 0.5"
+    // "        metalness 0"
+    // "      }"
+    //   "        size 0.14 0.14 0.0001"
+    // "  name \"target\""
+    // "}";
 
 
 std::string vertical_wall_string =
@@ -53,7 +70,7 @@ std::string vertical_wall_string =
     "  translation %7.4f %7.4f 0.025"
     "  rotation 0 0 1 0"
     "      appearance PBRAppearance {"
-    "        baseColor 0.2 0.6 0.1"
+    "        baseColor 1.0 1.0 1.0"
     "        roughness 0.5"
     "        metalness 0"
     "      }"
@@ -66,7 +83,7 @@ std::string horizontal_wall_string =
     "  translation %7.4f %7.4f 0.025"
     "  rotation 0 0 1 0"
     "      appearance PBRAppearance {"
-    "        baseColor 0.2 0.6 0.1"
+    "        baseColor 1.0 1.0 1.0"
     "        roughness 0.5"
     "        metalness 0"
     "      }"
@@ -115,7 +132,7 @@ bool cbLabHandler::startElement( const QString&, const QString&, const QString& 
                           {1.0,1.0,0.0},
                           {1.0,0.0,1.0},
                           {0.0,1.0,1.0},
-                          {1.0,1.0,1.0}};
+                          {0.0,0.0,0.0}};
         char target_str[1024*8];
         sprintf(target_str, target_string.c_str(),
                 x * PATHCUBESIZE*0.5, y * PATHCUBESIZE*0.5,

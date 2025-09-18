@@ -35,8 +35,8 @@ camera = robot.getDevice("camera")
 camera.enable(timeStep)
 
 
-near_front = 74
-near_side = 71
+near_front = 100
+near_side = 90
 
 while robot.step(timeStep) != -1:
     dist_sensor_values = [g.getValue() for g in dist_sensors]
@@ -50,12 +50,12 @@ while robot.step(timeStep) != -1:
         rightMotor.setVelocity( cruiseVelocity)
     elif dist_sensor_values[1]>near_side and dist_sensor_values[1]>dist_sensor_values[6]:
         print('turn left')
-        leftMotor.setVelocity (-0.1*cruiseVelocity)
+        leftMotor.setVelocity ( 0.1*cruiseVelocity)
         rightMotor.setVelocity( 1.2*cruiseVelocity)
     elif dist_sensor_values[6]>near_side:
         print('turn right')
         leftMotor.setVelocity ( 1.2*cruiseVelocity)
-        rightMotor.setVelocity(-0.1*cruiseVelocity)
+        rightMotor.setVelocity( 0.1*cruiseVelocity)
     else:
         print('go')
         leftMotor.setVelocity(cruiseVelocity)
