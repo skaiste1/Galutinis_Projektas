@@ -7,47 +7,45 @@ CiberRato Robot Simulation Environment simulates the movement
 of robots inside a labyrinth.  Robots objective is to go from their
 starting position to beacon area and then return to their start position.
 
-The MicroRato competition
-[http://microrato.ua.pt/], held annually at Aveiro University, 
-uses these these tools for its Explorer league.
-
 ## Contents
 
-* simulator -           The simulator source code
-* Viewer -              The Visualizer source code
-* logplayer -           The logplayer source code
-* GUISample -           Graphical robot agent (C++) source code
-* robsample -           robot agent (C) source code
-* jClient -             robot agent (Java) source code
-* pClient -             robot agent (Python) source code
-* Labs -                examples of labyrinths used in previous competitions
-* startAll -            script that runs the simulator, the visualizer and 5 GUISamples
-* startSimViewer -      script that runs the simulator and the Viewer
+* simulator -           The cb_webots library source code
+* webots -              The cb_webots worlds and controllers
 
 ## Install
 
 The source code was compiled with gcc/g++ - Gnu Project C/C++ Compiler
 (gcc version  9.3.0) using the Qt libraries (release 5.12.8) on Ubuntu 20.04.
 
+To use the tools in this branch, you should first install webots simulator [https://cyberbotics.com/]
+
+
 It is required to have the development version of gcc/g++, cmake, Qt libraries
 release 5.x installed in the system prior to compilation.
-On Ubuntu 20.04 run the following:
+On Ubuntu 24.04 run the following:
 ```bash
-sudo apt-get install build-essential cmake qtmultimedia5-dev
+sudo apt-get install build-essential cmake qtmultimedia5-dev git
 ```
 
 Then in the repository base dir, execute:
 ```bash
+git switch cb_webots
 mkdir build
 cd build
 cmake ..
-make
+make -j4
 ```
 
-To run the simulator, Viewer and C++ agent, execute (at the repository base dir):
+To run the webots, execute:
 ```bash
-./startAll
+webots
 ```
+
+In the webots File menu select "Open World" and open the world at `ciberRatoTools\webots\worlds\rmi_challenge_1.wbt`
+
+To compile the supervisor controller, click the ![wheel](wheel.png) button over the Edit window.
+
+All set! To start the simulation click ![start](start.png) button.
 
 
 ## Authors
