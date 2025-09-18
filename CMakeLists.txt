@@ -25,8 +25,3 @@ find_package(Qt5 COMPONENTS Widgets Multimedia Network Xml REQUIRED)
 add_compile_options(-DTRUE=1 -DFALSE=0)
 
 add_subdirectory(simulator)
-add_subdirectory(Viewer)
-add_subdirectory(libRobSock)
-add_subdirectory(logplayer)
-add_subdirectory(robsample)
-add_subdirectory(GUISample)
