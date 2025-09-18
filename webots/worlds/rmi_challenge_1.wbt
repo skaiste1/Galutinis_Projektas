@@ -42,6 +42,7 @@ DEF EPUCK E-puck {
   camera_width 32
   camera_height 32
   camera_rotation 0 1 0 0.47
+  distance_sensor_numberOfRays 4
 }
 DEF SUPERVISOR Robot {
   name "supervisor"
