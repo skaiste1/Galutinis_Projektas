@@ -14,7 +14,7 @@
 #include "cblabhandler.h"
 
 // Define the maximum duration of the simulation in seconds
-#define MAX_TIME_SECONDS 1000.0
+#define MAX_TIME_SECONDS 200.0
 #define M_PI 3.14159265358979323846
 
 struct cell_t
@@ -275,12 +275,26 @@ int main(int argc, char **argv)
         // Get the current simulation time.
         double currentTime = supervisor->getTime();
 
+        std::string scoreText;
+
         // Check if the simulation time has exceeded the maximum duration.
         if (currentTime >= MAX_TIME_SECONDS)
         {
             // The argument 0 indicates a successful exit.
-            supervisor->simulationQuit(0);
+            if (epuck_node) {
+                epuck_node->remove();
+                epuck_node = NULL;
+            }
+            scoreText = "GAME OVER";
         }
+        else {
+            scoreText = "";
+        }
+
+        // Display the label
+        supervisor->setLabel(0, scoreText, 0.6, 0.01, 0.1, 0xFF0000, 0.0, "Arial");
+
+
     }
 
     delete supervisor;

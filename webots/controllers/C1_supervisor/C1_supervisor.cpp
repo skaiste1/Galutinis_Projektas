@@ -13,7 +13,7 @@
 #include "cblabhandler.h"
 
 // Define the maximum duration of the simulation in seconds
-#define MAX_TIME_SECONDS 1000.0
+#define MAX_TIME_SECONDS 200.0
 #define M_PI 3.14159265358979323846
 
 struct cell_t
@@ -163,28 +163,22 @@ int main(int argc, char **argv)
         // Get the current simulation time.
         double currentTime = supervisor->getTime();
 
-        // printf("%f\n",currentTime);
+        std::string scoreText;
 
         // Check if the simulation time has exceeded the maximum duration.
         if (currentTime >= MAX_TIME_SECONDS)
         {
             // The argument 0 indicates a successful exit.
-            supervisor->simulationQuit(0);
+            scoreText = "Final Score: " + std::to_string(scoreControl);
+        }
+        else {
+            // Increment the score (this is just an example, replace with your logic)
+            update_score();
+            scoreText = "Score: " + std::to_string(scoreControl);
         }
 
-        // Increment the score (this is just an example, replace with your logic)
-        update_score();
-
-        // Create the string to be displayed
-        std::string scoreText = "Score: " + std::to_string(scoreControl);
-
         // Display the label
-        // wb_supervisor_set_label(id, text, x_pos, y_pos, size, color, transparency, font)
-        // The id (0 in this case) is an index for the label.
-        // The x and y positions are normalized between 0.0 and 1.0.
-        // For top-right, a high x and low y value is used.
-        // The color is in hex format (0xRRGGBB).
-        supervisor->setLabel(0, scoreText, 0.8, 0.01, 0.1, 0xFF0000, 0.0, "Arial");
+        supervisor->setLabel(0, scoreText, 0.6, 0.01, 0.1, 0xFF0000, 0.0, "Arial");
     }
 
     delete supervisor;
