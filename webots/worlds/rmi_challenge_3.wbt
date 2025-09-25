@@ -9,16 +9,16 @@ IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R20
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5125222170747198 -0.4587912144083773 -0.7258316599505013 4.512755724224793
-  position 1.480245293460138 -1.1791924938206144 5.878910920751297
+  orientation 0.6094733083114768 -0.5617910235803266 -0.5594042655186253 4.272398853321251
+  position 2.530483936988994 1.919560387943068 10.157185582405269
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  translation 2.55 2.025 0
-  floorSize 5.1 4.05
+  translation 3.975 1.875 0
+  floorSize 7.95 3.75
   floorTileSize 0.15 0.15
   floorAppearance PBRAppearance {
     baseColorMap ImageTexture {

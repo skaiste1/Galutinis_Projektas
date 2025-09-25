@@ -218,8 +218,8 @@ int main(int argc, char **argv)
     int offsetY = 0;
 
     srand(time(0));
-    offsetX = rand() % 21;
-    offsetY = rand() % 21;
+    offsetX = rand() % 14+13;
+    offsetY = rand() %  7+ 6;
 
     // ---
     // 2. GET SCENE TREE NODES
