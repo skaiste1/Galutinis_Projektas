@@ -115,30 +115,30 @@ bool cbLabHandler::startElement( const QString&, const QString&, const QString& 
         lab = new cbLab;
 
 		sprintf(wall_str, vertical_wall_string.c_str(),
-	      0.0,
-		  7*PATHCUBESIZE/2,
+	      0.0 + offsetX*PATHCUBESIZE,
+		  7*PATHCUBESIZE/2 + offsetY*PATHCUBESIZE,
           7*PATHCUBESIZE,
 		  "vertical_wall");
 		children_field->importMFNodeFromString(-1, wall_str);
 
 		sprintf(wall_str, vertical_wall_string.c_str(),
-	      14*PATHCUBESIZE,
-		  7*PATHCUBESIZE/2,
+	      14*PATHCUBESIZE + offsetX*PATHCUBESIZE,
+		  7*PATHCUBESIZE/2 + offsetY*PATHCUBESIZE,
           7*PATHCUBESIZE,
 		  "vertical_wall");
 		children_field->importMFNodeFromString(-1, wall_str);
 
 	    sprintf(wall_str, horizontal_wall_string.c_str(),
-		  14*PATHCUBESIZE/2,
-		  0.0,
-		  14*PATHCUBESIZE,		
+		  14*PATHCUBESIZE/2 + offsetX*PATHCUBESIZE,
+		  0.0 + offsetY*PATHCUBESIZE,
+		  14*PATHCUBESIZE,
 		  "horizontal_wall");
 		children_field->importMFNodeFromString(-1, wall_str);
 
 	    sprintf(wall_str, horizontal_wall_string.c_str(),
-		  14*PATHCUBESIZE/2,
-		  7*PATHCUBESIZE,
-		  14*PATHCUBESIZE,		
+		  14*PATHCUBESIZE/2 + offsetX*PATHCUBESIZE,
+		  7*PATHCUBESIZE + offsetY*PATHCUBESIZE,
+		  14*PATHCUBESIZE,
 		  "horizontal_wall");
 		children_field->importMFNodeFromString(-1, wall_str);
 
@@ -166,7 +166,7 @@ bool cbLabHandler::startElement( const QString&, const QString&, const QString& 
                           {0.0,0.0,0.0}};
         char target_str[1024*8];
         sprintf(target_str, target_string.c_str(),
-                x * PATHCUBESIZE*0.5, y * PATHCUBESIZE*0.5,
+                x * PATHCUBESIZE*0.5 + offsetX*PATHCUBESIZE, y * PATHCUBESIZE*0.5 + offsetY*PATHCUBESIZE,
                 id_color[target_id%6][0], id_color[target_id%6][1], id_color[target_id%6][2]);
 		children_field->importMFNodeFromString(-1, target_str);
         target_id++;
@@ -206,8 +206,8 @@ bool cbLabHandler::startElement( const QString&, const QString&, const QString& 
 
                             lab->addWall(wall);
 							sprintf(wall_str, vertical_wall_string.c_str(),
-							        ((col+1)/3.0)*PATHCUBESIZE,
-							        (row*0.5+0.5)*PATHCUBESIZE,
+							        ((col+1)/3.0)*PATHCUBESIZE  + offsetX*PATHCUBESIZE,
+							        (row*0.5+0.5)*PATHCUBESIZE + offsetY*PATHCUBESIZE,
                                     PATHCUBESIZE,
 							        "vertical_wall");
 							children_field->importMFNodeFromString(-1, wall_str);
@@ -246,8 +246,8 @@ bool cbLabHandler::startElement( const QString&, const QString&, const QString& 
 
                                lab->addWall(wall);
 							sprintf(wall_str, horizontal_wall_string.c_str(),
-							        ((horWallStartCol+horWallEndCol)/2.0/3.0+0.5)*PATHCUBESIZE,
-							        ((row+1)*0.5)*PATHCUBESIZE,
+							        ((horWallStartCol+horWallEndCol)/2.0/3.0+0.5)*PATHCUBESIZE+ offsetX*PATHCUBESIZE,
+							        ((row+1)*0.5)*PATHCUBESIZE+ offsetY*PATHCUBESIZE,
 							        ((horWallEndCol - horWallStartCol)/3.0+1.0-2.0*PATHWALLGAP)*PATHCUBESIZE,		
 							        "horizontal_wall");
 							children_field->importMFNodeFromString(-1, wall_str);

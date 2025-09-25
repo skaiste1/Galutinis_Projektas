@@ -26,6 +26,7 @@ int nCellPath = 0;
 int nextPathInd = 0;
 int scoreControl = 0;
 
+
 // Get the e-puck node by DEF name (e.g., "EPUCK")
 webots::Node *epuck_node;
 
@@ -212,6 +213,14 @@ int main(int argc, char **argv)
     webots::Supervisor *supervisor = new webots::Supervisor();
     int timeStep = (int)supervisor->getBasicTimeStep();
 
+    // random offsets to avoid GPS informing on exact position in maze
+    int offsetX = 0;
+    int offsetY = 0;
+
+    srand(time(0));
+    offsetX = rand() % 21;
+    offsetY = rand() % 21;
+
     // ---
     // 2. GET SCENE TREE NODES
     // ---
@@ -243,6 +252,7 @@ int main(int argc, char **argv)
 
     cbLabHandler *labHandler = new cbLabHandler;
     labHandler->setChildrenField(children_field);
+    labHandler->setOffsets(offsetX, offsetY);
 
     QXmlSimpleReader xmlParser;
     xmlParser.setContentHandler(labHandler);
@@ -260,6 +270,16 @@ int main(int argc, char **argv)
     {
         std::cerr << "No DEF EPUCK node found in the current world file\n";
         exit(0);
+    }
+    
+    webots::Field *translationField = epuck_node->getField("translation");
+    if (translationField) {
+        // Define the new position (e.g., move to X=1.0, Y=2.0)
+        double newTranslation[3] = {labHandler->getLab()->Target(0)->Center().x + offsetX * PATHCUBESIZE, 
+                                    labHandler->getLab()->Target(0)->Center().y + offsetY * PATHCUBESIZE, 
+                                    0.0}; 
+        translationField->setSFVec3f(newTranslation);
+        //std::cout << "E-puck repositioned." << std::endl;
     }
 
     determine_lab_map_centered_on_robot_initial_pos(labHandler->getLab());

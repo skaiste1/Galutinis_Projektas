@@ -9,16 +9,16 @@ IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R20
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.4822195087135361 -0.4405198214046284 -0.7572361800427331 4.587411896061048
-  position 0.5792306560310685 -1.0047559088674176 2.5731870247178605
+  orientation 0.5048914860834381 -0.46406208241201 -0.7278261955631209 4.543789519665339
+  position 1.3981429211050167 -0.9466690011643437 5.089446017785659
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  translation 1.05 0.525 0
-  floorSize 2.1 1.05
+  translation 2.55 2.025 0
+  floorSize 5.1 4.05
   floorTileSize 0.15 0.15
   floorAppearance PBRAppearance {
     baseColorMap ImageTexture {
@@ -36,7 +36,7 @@ RectangleArena {
   }
 }
 DEF EPUCK E-puck {
-  translation 0.225 0.825 0
+  translation 0.075 0.075 0
   controller "C2_pClient"
   window "botstudio"
   camera_width 32
@@ -44,9 +44,6 @@ DEF EPUCK E-puck {
   camera_rotation 0 1 0 0.47
   distance_sensor_numberOfRays 4
   turretSlot [
-    GPS {
-      name "gps(1)"
-    }
     Compass {
     }
     DEF GPS_DEVICE GPS {

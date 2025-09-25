@@ -39,6 +39,7 @@ public:
     bool endElement( const QString&, const QString&, const QString& );
 	void setDocumentLocator(QXmlLocator *);
     void setChildrenField(webots::Field *field);
+    void setOffsets(int x, int y) { offsetX = x; offsetY = y; }
 
     cbLab *getLab() { return lab; }
 
@@ -48,6 +49,7 @@ private:
     cbLab *lab;
     cbWall *wall;
     int target_id=0;
+    int offsetX=0, offsetY=0;
 };     
 
 #endif

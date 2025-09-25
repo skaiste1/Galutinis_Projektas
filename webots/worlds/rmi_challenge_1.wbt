@@ -36,7 +36,7 @@ RectangleArena {
   }
 }
 DEF EPUCK E-puck {
-  translation 0.225 0.825 0
+  translation 0.075 0.075 0
   controller "C1_pClient"
   window "botstudio"
   camera_width 32

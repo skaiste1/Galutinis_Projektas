@@ -152,6 +152,16 @@ int main(int argc, char **argv)
 
     epuck_node = supervisor->getFromDef("EPUCK");
 
+    webots::Field *translationField = epuck_node->getField("translation");
+    if (translationField) {
+        // Define the new position (e.g., move to X=1.0, Y=2.0)
+        double newTranslation[3] = {labHandler->getLab()->Target(0)->Center().x, 
+                                    labHandler->getLab()->Target(0)->Center().y, 
+                                    0.0}; 
+        translationField->setSFVec3f(newTranslation);
+        //std::cout << "E-puck repositioned." << std::endl;
+    }
+
     // ---
     // 4. MAIN LOOP (Optional)
     // ---
