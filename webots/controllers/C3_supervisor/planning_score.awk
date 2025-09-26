@@ -23,16 +23,16 @@ FNR==NR {
          visited[$t] = 0
       }
    }
-   else bestDist = $1
+   else bestDist = $1*2
    line++
 
    next
 }
 
 {
-    x=$1
-    y=$2
-    print "x",x,"y",y
+    x=$1*2
+    y=$2*2
+    print "x",x/2,"y",y/2
 
     if (pathind==1) {
         if(x!=0 || y!=0) {
@@ -42,12 +42,21 @@ FNR==NR {
              exit 1
         }
         visited[0]=1
+        movdirX = 0
+        movdirY = 0
+        prevX = X
+        prevY = y
+        #print "lin", prevY+movdirY+(nlines+1)/2, "col", prevX+movdirX+(linelength+1)/2
+        #print mapref[prevY+movdirY+(nlines+1)/2][prevX+movdirX+(linelength+1)/2-1],mapref[prevY+movdirY+(nlines+1)/2][prevX+movdirX+(linelength+1)/2],mapref[prevY+movdirY+(nlines+1)/2][prevX+movdirX+(linelength+1)/2+1]
     }
     else {
         movdirX = (x - prevX)/2
         movdirY = (y - prevY)/2
+        #print "lin", prevY+movdirY+(nlines+1)/2, "col", prevX+movdirX+(linelength+1)/2
+        #print mapref[prevY+movdirY+(nlines+1)/2][prevX+movdirX+(linelength+1)/2-1],mapref[prevY+movdirY+(nlines+1)/2][prevX+movdirX+(linelength+1)/2],mapref[prevY+movdirY+(nlines+1)/2][prevX+movdirX+(linelength+1)/2+1]
         if(mapref[prevY+movdirY+(nlines+1)/2][prevX+movdirX+(linelength+1)/2]!="X") {
-             print "prevY",prevY, "prevX", prevX ,"movY", movdirY ,"movX", movdirX
+             #print "lin", prevY+movdirY+(nlines+1)/2, "col", prevX+movdirX+(linelength+1)/2
+             print "prevY",prevY/2, "prevX", prevX/2 ,"movY", movdirY ,"movX", movdirX
              print "Error in path"
              print "Planning score: " 0
              exiting=1

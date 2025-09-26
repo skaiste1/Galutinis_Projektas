@@ -32,16 +32,14 @@ webots::Node *epuck_node;
 
 #define PATHCUBESIZE (0.15)
 
-struct cell_t getRobotCell()
+struct cell_t getInitialCell(cbLab *lab)
 {
     struct cell_t cell;
-    if (epuck_node)
-    {
-        const double *position = epuck_node->getPosition();
-        // std::cout << "e-puck position: x=" << position[0] << " y=" << position[1] << " z=" << position[2] << std::endl;
-        cell.x = static_cast<int>(position[0] / PATHCUBESIZE);
-        cell.y = static_cast<int>(position[1] / PATHCUBESIZE);
-    }
+
+    cell.x = lab->Target(0)->Center().x / PATHCUBESIZE;
+    cell.y = lab->Target(0)->Center().y / PATHCUBESIZE;
+    std::cout << "initial cell: x=" << cell.x << " y=" << cell.y << std::endl;
+
     return cell;
 }
 
@@ -57,8 +55,7 @@ void determine_lab_map_centered_on_robot_initial_pos(cbLab *lab)
 
     // debug
 
-    struct cell_t initCell = getRobotCell();
-    ;
+    struct cell_t initCell = getInitialCell(lab);
 
     // find vertical walls
     for (int cy = 0; cy < cells_height; cy++)
@@ -218,8 +215,8 @@ int main(int argc, char **argv)
     int offsetY = 0;
 
     srand(time(0));
-    offsetX = rand() % 14+13;
-    offsetY = rand() %  7+ 6;
+    offsetX = rand() % 40;
+    offsetY = rand() % 19;
 
     // ---
     // 2. GET SCENE TREE NODES
