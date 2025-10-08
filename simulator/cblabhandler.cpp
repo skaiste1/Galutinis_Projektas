@@ -151,6 +151,7 @@ bool cbLabHandler::startElement( const QString&, const QString&, const QString& 
 	}
 	else if (tag == "Target")
 	{
+    #define N_TARGET_COLORS 7
 		double x=0.0, y=0.0, radius=0.02;
 		const QString &x_at = attr.value(QString("X"));
 		if (!x_at.isNull()) x = x_at.toDouble();
@@ -158,16 +159,17 @@ bool cbLabHandler::startElement( const QString&, const QString&, const QString& 
 		if (!y_at.isNull()) y = y_at.toDouble();
 		const QString &radius_at = attr.value(QString("Radius"));
 		if (!radius_at.isNull()) radius = radius_at.toDouble();
-        float id_color[6][3] = {{1.0,0.0,0.0},
+        float id_color[N_TARGET_COLORS][3] = {{1.0,0.0,0.0},
                           {0.0,0.0,1.0},
                           {1.0,1.0,0.0},
                           {1.0,0.0,1.0},
                           {0.0,1.0,1.0},
+                          {1.0,0.45,0.0},
                           {0.0,0.0,0.0}};
         char target_str[1024*8];
         sprintf(target_str, target_string.c_str(),
                 x * PATHCUBESIZE*0.5 + offsetX*PATHCUBESIZE, y * PATHCUBESIZE*0.5 + offsetY*PATHCUBESIZE,
-                id_color[target_id%6][0], id_color[target_id%6][1], id_color[target_id%6][2]);
+                id_color[target_id%N_TARGET_COLORS][0], id_color[target_id%N_TARGET_COLORS][1], id_color[target_id%N_TARGET_COLORS][2]);
 		children_field->importMFNodeFromString(-1, target_str);
         target_id++;
 
