@@ -28,6 +28,8 @@ while robot.step(timestep) != -1:
     # Read the sensors:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()
+    
+    print("customData",robot.getCustomData())
 
     # Process sensor data here.
 

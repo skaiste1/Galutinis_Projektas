@@ -33,5 +33,6 @@ while robot.step(timestep) != -1:
     #  motor.setPosition(10.0)
     frame = camera.getImage()
     print(gps.getValues())
+    print(robot.getCustomData())
 
 # Enter here exit cleanup code.

@@ -278,6 +278,20 @@ int main(int argc, char **argv)
         translationField->setSFVec3f(newTranslation);
         //std::cout << "E-puck repositioned." << std::endl;
     }
+    
+    // Set custom data
+    webots::Field *customDataField = epuck_node->getField("customData");
+    
+    if (!customDataField) {
+        std::cerr << "Error: 'customData' field not found on EPUCK node." << std::endl;
+        return 1;
+    }
+    
+    char str_custom_data[4*1024];
+    
+    sprintf(str_custom_data,"FinalTime %.1f NTargets %d", MAX_TIME_SECONDS, labHandler->getLab()->nTargets());
+    
+    customDataField->setSFString(str_custom_data);
 
     determine_lab_map_centered_on_robot_initial_pos(labHandler->getLab());
 
