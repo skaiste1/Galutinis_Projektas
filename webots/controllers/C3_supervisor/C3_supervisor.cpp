@@ -14,7 +14,7 @@
 #include "cbgraph.h"
 
 // Define the maximum duration of the simulation in seconds
-#define MAX_TIME_SECONDS 200.0
+#define MAX_TIME_SECONDS 500.0
 #define M_PI 3.14159265358979323846
 
 #ifndef MAXINT
