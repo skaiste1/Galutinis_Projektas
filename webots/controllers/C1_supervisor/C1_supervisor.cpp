@@ -45,9 +45,13 @@ struct cell_t getRobotCell()
 
 void build_cell_path(cbLab *lab)
 {
-    // controlCellPath[0] = lab->getTargetCell(0);
-    controlCellPath[0].x = 1;
-    controlCellPath[0].y = 5;
+    controlCellPath[0].x = lab->Target(0)->Center().x / PATHCUBESIZE;
+    controlCellPath[0].y = lab->Target(0)->Center().y / PATHCUBESIZE;
+
+    fprintf(stderr, "::: %d, %d %d %f\n", controlCellPath[0].x, controlCellPath[0].y, lab->nTargets(), lab->Target(0)->Center().x);
+
+    //controlCellPath[0].x = 1;
+    //controlCellPath[0].y = 5;
     struct cell_t newCell = controlCellPath[0];
     newCell.x++;
     nCellPath = 1;
