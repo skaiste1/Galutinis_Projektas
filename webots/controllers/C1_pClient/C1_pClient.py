@@ -3,10 +3,7 @@
 import numpy
 import xml.etree.ElementTree as ET
 
-
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, Motor, DistanceSensor
-from controller import Robot
+from controller import Robot, Motor, DistanceSensor, Camera
 
 CELLROWS=7
 CELLCOLS=14
@@ -14,132 +11,130 @@ CELL_SIZE = 0.15
 KP = 10.0
 MAX_SPEED = 6.27
 
+
 class Map():
     def __init__(self, filename):
-        tree = ET.parse(filename)
-        root = tree.getroot()
-        
-        self.labMap = [[' '] * (CELLCOLS*2-1) for i in range(CELLROWS*2-1) ]
-        i=1
-        for child in root.iter('Row'):
-           line=child.attrib['Pattern']
-           row =int(child.attrib['Pos'])
-           if row % 2 == 0:  # this line defines vertical lines
-               for c in range(len(line)):
-                   if (c+1) % 3 == 0:
-                       if line[c] == '|':
-                           self.labMap[row][(c+1)//3*2-1]='|'
-                       else:
-                           None
-           else:  # this line defines horizontal lines
-               for c in range(len(line)):
-                   if c % 3 == 0:
-                       if line[c] == '-':
-                           self.labMap[row][c//3*2]='-'
-                       else:
-                           None
-               
-           i=i+1
+        try:
+            tree = ET.parse(filename)
+            root = tree.getroot()
+            self.labMap = [[' '] * (CELLCOLS*2-1) for i in range(CELLROWS*2-1) ]
+            i=1
+            for child in root.iter('Row'):
+               line=child.attrib['Pattern']
+               row =int(child.attrib['Pos'])
+               if row % 2 == 0:
+                   for c in range(len(line)):
+                       if (c+1) % 3 == 0:
+                           if line[c] == '|':
+                               self.labMap[row][(c+1)//3*2-1]='|'
+               else:
+                   for c in range(len(line)):
+                       if c % 3 == 0:
+                           if line[c] == '-':
+                               self.labMap[row][c//3*2]='-'
+               i=i+1
+        except Exception as e:
+            print(f"Warning: Map load failed ({e}). Continuing.")
+
 class MyRob:
     def __init__(self):
-        # create the Robot instance.
         self.robot = Robot()
-
-        # Get simulation step length.
         self.timeStep = int(self.robot.getBasicTimeStep())
 
-        # Constants of the e-puck motors and distance sensors.
         self.cruiseVelocity = 4.0
         self.num_dist_sensors = 8
 
-        # Get left and right wheel motors.
         self.leftMotor = self.robot.getDevice("left wheel motor")
         self.rightMotor = self.robot.getDevice("right wheel motor")
-
-        # Get frontal distance sensors.
-        self.dist_sensors = [self.robot.getDevice('ps' + str(x)) for x in range(self.num_dist_sensors)]  # distance sensors
-        list(map((lambda s: s.enable(self.timeStep)), self.dist_sensors))  # Enable all distance sensors
-
-        # Disable motor PID control mode.
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
+        self.leftMotor.setVelocity(0.0)
+        self.rightMotor.setVelocity(0.0)
 
+        self.dist_sensors = []
+        for x in range(self.num_dist_sensors):
+            sensor = self.robot.getDevice('ps' + str(x))
+            if sensor:
+                sensor.enable(self.timeStep)
+                self.dist_sensors.append(sensor)
+            else:
+                print(f"Warning: Sensor ps{x} not found!")
 
-        # Set the initial velocity of the left and right wheel motors.
-        self.driveMotors(0.0, 0.0)
-
+        # camera
         self.camera = self.robot.getDevice("camera")
-        self.camera.enable(self.timeStep)
+        if self.camera:
+            self.camera.enable(self.timeStep)
+        
+        self.checkpoint_state = 0
 
         self.gps = self.robot.getDevice("gps")
-        self.gps.enable(self.timeStep)
+        if self.gps:
+            self.gps.enable(self.timeStep)
+        else:
+            print("Info: GPS not found on robot. Skipping GPS.")
 
         self.compass = self.robot.getDevice("compass")
-        self.compass.enable(self.timeStep)
+        if self.compass:
+            self.compass.enable(self.timeStep)
+        else:
+            print("Info: Compass not found on robot. Skipping Compass.")
 
-        # Step simulation to initialize sensors.
         self.step()
 
-        self.abs_ref_pos = numpy.array(self.gps.getValues())
-        print("Initial position:", self.abs_ref_pos)
+        if self.gps:
+            self.abs_ref_pos = numpy.array(self.gps.getValues())
+            print("Initial position:", self.abs_ref_pos)
+        else:
+            self.abs_ref_pos = numpy.array([0, 0, 0]) 
+            self.cur_dir = 0
 
     def step(self):
         self.robot.step(self.timeStep)
-        self.cur_pos = numpy.array(self.gps.getValues())
-        self.cur_dir = (-numpy.arctan2(self.compass.getValues()[1], self.compass.getValues()[0]) + numpy.pi/2) % (2 * numpy.pi)
-        self.cur_dir = (self.cur_dir + numpy.pi) % (2 * numpy.pi) - numpy.pi
+
+        if self.gps:
+            self.cur_pos = numpy.array(self.gps.getValues())
+        
+        if self.compass:
+            compass_val = self.compass.getValues()
+            if compass_val:
+                self.cur_dir = (-numpy.arctan2(compass_val[1], compass_val[0]) + numpy.pi/2) % (2 * numpy.pi)
+                self.cur_dir = (self.cur_dir + numpy.pi) % (2 * numpy.pi) - numpy.pi
 
     def driveMotors(self, leftSpeed, rightSpeed):
         self.leftMotor.setVelocity(max(min(leftSpeed,MAX_SPEED),-MAX_SPEED))
         self.rightMotor.setVelocity(max(min(rightSpeed,MAX_SPEED),-MAX_SPEED))
 
-
     def rotate(self, target_dir):
-        #print("Rotating to direction:", target_dir)
+        if not self.compass: return 
         while(numpy.abs(target_dir - self.cur_dir) > 0.01):
             angle_error = target_dir - self.cur_dir
             angle_error = (angle_error + numpy.pi) % (2 * numpy.pi) - numpy.pi
-            #print("Current direction:", self.cur_dir*180/numpy.pi, " Target direction    :", target_dir*180/numpy.pi, " Angle error:", angle_error*180/numpy.pi)
-
             self.driveMotors(-KP * angle_error, +KP * angle_error)
-
             self.step()
         self.driveMotors(0.0, 0.0)
 
     def move_to(self, target_pos):
-        #print("Moving to position:", target_pos, " from ", self.cur_pos)
-
+        if not self.gps or not self.compass: return 
+        
         target_dir = numpy.arctan2(target_pos[1] - self.cur_pos[1], target_pos[0] - self.cur_pos[0])
-        target_dir = (target_dir + numpy.pi/4)//(numpy.pi/2) * numpy.pi/2  # snap to 90 degrees
-
-        #print("Target direction:", target_dir*180/numpy.pi, " from ", self.cur_dir*180/numpy.pi)
+        target_dir = (target_dir + numpy.pi/4)//(numpy.pi/2) * numpy.pi/2 
 
         if(numpy.abs(target_dir - self.cur_dir) > 0.1):
             self.rotate(target_dir)
 
         dist = numpy.linalg.norm(target_pos - self.cur_pos)
-        #print("Distance to target:", dist)
         while(dist > 0.005):
-
             target_pos_dir = target_pos + CELL_SIZE * numpy.array([numpy.cos(target_dir), numpy.sin(target_dir), 0.0])
             angle_error = numpy.arctan2(target_pos_dir[1] - self.cur_pos[1],
                                         target_pos_dir[0] - self.cur_pos[0]) - self.cur_dir
             angle_error = (angle_error + numpy.pi) % (2 * numpy.pi) - numpy.pi
 
-            #print("Current norm position:", (self.cur_pos - self.abs_ref_pos)/CELL_SIZE, " Target norm position:", (target_pos-self.abs_ref_pos)/CELL_SIZE, 
-            #    " Distance:", dist, " Target Angle Pos:", (target_pos_dir-self.abs_ref_pos)/CELL_SIZE, " Current Angle:", self.cur_dir*180/numpy.pi)
-
-            #print("Angle error:", angle_error*180/numpy.pi)
-
             self.driveMotors( self.cruiseVelocity - KP * angle_error,
                              self.cruiseVelocity + KP * angle_error)   
-
             self.step()
             dist = numpy.linalg.norm(target_pos - self.cur_pos)
         self.driveMotors(0.0, 0.0)
 
-    # In this map the center of cell (i,j), (i in 0..6, j in 0..13) is mapped to labMap[i*2][j*2].
-    # to know if there is a wall on top of cell(i,j) (i in 0..5), check if the value of labMap[i*2+1][j*2] is space or not
     def setMap(self, labMap):
         self.labMap = labMap
 
@@ -148,33 +143,167 @@ class MyRob:
             print(''.join([str(l) for l in l]))
 
 
-# main 
+    def get_color(self):
+        if not self.camera: return None
+        img = self.camera.getImage()
+        if not img: return None
+        
+        w = self.camera.getWidth()
+        h = self.camera.getHeight()
+        x = w // 2
+        y = h // 2
+        try:
+            r = self.camera.imageGetRed(img, w, x, y)
+            g = self.camera.imageGetGreen(img, w, x, y)
+            b = self.camera.imageGetBlue(img, w, x, y)
+            
+
+            # print(f"RGB: {r}, {g}, {b}")
+
+            if b > 100 and r < 80 and g < 80: return "BLUE"
+            if r > 100 and g > 100 and b < 80: return "YELLOW"
+            if r > 100 and g < 80 and b < 80: return "RED"
+        except:
+            return None
+            
+        return None
+    def turn_around(self):
+        print("Wrong direction. Turning around.")
+        self.driveMotors(-4.0, 4.0)
+        for _ in range(40): self.step()
+        self.driveMotors(0, 0)
+        self.step()
+        self.last_processed_color = None
+
+    def update_checkpoint_state(self):
+        color = self.get_color()
+        
+        if color is None:
+            self.last_processed_color = None
+            return
+
+        if color == self.last_processed_color:
+            return
+
+        self.last_processed_color = color
+        
+        if self.checkpoint_state == 0 and color == "BLUE":
+            print("Checkpoint: BLUE REACHED")
+            self.checkpoint_state = 1
+        elif self.checkpoint_state == 1 and color == "YELLOW":
+            print("Checkpoint: YELLOW REACHED")
+            self.checkpoint_state = 2
+        elif self.checkpoint_state == 2 and color == "RED":
+            print("Checkpoint: RED REACHED ")
+            self.checkpoint_state = 0
+        elif self.checkpoint_state == 1 and color == "BLUE":
+             self.turn_around()
+        elif self.checkpoint_state == 2 and color == "YELLOW":
+             self.turn_around()
+        elif self.checkpoint_state == 0 and color == "RED":
+             self.turn_around()
+
+    def run_auto_mode(self):
+        
+        CRUISE_SPEED = 6.27
+        TURN_FACTOR = 0.08
+
+        while self.step() != -1:
+            if not self.dist_sensors: break
+
+            ps = [s.getValue() for s in self.dist_sensors]
+
+            # front ps0 ir ps7
+            front_obstacle = max(ps[0], ps[7])
+            
+            # side ps5 and ps2
+            left_wall = ps[5]
+            right_wall = ps[2]
+            
+            # diagonals ps6 and ps1
+            left_diag = ps[6]
+            right_diag = ps[1]
+
+            left_speed = CRUISE_SPEED
+            right_speed = CRUISE_SPEED
+
+            if front_obstacle > 150:
+                
+                if left_wall > right_wall:
+                     left_speed = 3.0
+                     right_speed = -3.0
+                else:
+                     left_speed = -3.0
+                     right_speed = 3.0
+            
+
+            else:
+                diff = left_diag - right_diag
+                left_speed = CRUISE_SPEED + (diff * TURN_FACTOR)
+                right_speed = CRUISE_SPEED - (diff * TURN_FACTOR)
+
+            self.update_checkpoint_state()
+            self.driveMotors(left_speed, right_speed)       
+
+""" 
+    def run_auto_mode(self):
+#this would get stuck at 470 
+        
+        CRUISE_SPEED = 6.27  
+        TURN_FACTOR = 0.08  
+
+        while self.step() != -1:
+            if not self.dist_sensors: break
+
+            ps = [s.getValue() for s in self.dist_sensors]
+
+            # ps7 (left front), ps0 (right front)
+            # ps6 (left diagonal), ps1 (right diagonal) 
+
+            front_obstacle = max(ps[0], ps[7])
+            left_diag = ps[6]
+            right_diag = ps[1]
+
+            left_speed = CRUISE_SPEED
+            right_speed = CRUISE_SPEED
+
+  
+            if front_obstacle > 150:
+                #if wall infront stop and turn where free
+
+                if left_diag < right_diag:
+                     left_speed = -3.0
+                     right_speed = 3.0
+                else:
+                     left_speed = 3.0
+                     right_speed = -3.0
+            
+
+            else:
+                # error > 0 means left wall is closer so turn right
+                # error < 0 means right wall is closer so turn left
+
+                diff = left_diag - right_diag
+
+                left_speed = CRUISE_SPEED + (diff * TURN_FACTOR)
+                right_speed = CRUISE_SPEED - (diff * TURN_FACTOR)
+
+            self.update_checkpoint_state()
+            self.driveMotors(left_speed, right_speed)
+            
+            """
+
 if __name__ == '__main__':
-
-    # open commands file
-    commands_file = open("commands.txt", "r")
-
     myrob = MyRob()
 
-    mapc = Map("../C1_supervisor/C1-lab.xml")
-    myrob.setMap(mapc.labMap)
-    myrob.printMap()
-  
-    target_pos = myrob.abs_ref_pos.copy()
 
-    while myrob.step() != -1:
-        # Read next movement from file
-        command = commands_file.readline().strip()
-        if command == "N":
-            print("Moving North")
-            target_pos[1] += CELL_SIZE
-        elif command == "S":
-            print("Moving South")
-            target_pos[1] -= CELL_SIZE
-        elif command == "E":
-            print("Moving East")
-            target_pos[0] += CELL_SIZE
-        elif command == "W":
-            print("Moving West")
-            target_pos[0] -= CELL_SIZE
-        myrob.move_to(target_pos)
+    try:
+        mapc = Map("../C1_supervisor/C1-lab.xml")
+        if hasattr(myrob, 'gps') and myrob.gps:
+             myrob.setMap(mapc.labMap)
+             myrob.printMap()
+    except:
+        pass
+
+
+    myrob.run_auto_mode()
