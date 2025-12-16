@@ -247,7 +247,7 @@ class MyRob:
 
 """ 
     def run_auto_mode(self):
-#this would get stuck at 470 
+    #this would get stuck at 470 
         
         CRUISE_SPEED = 6.27  
         TURN_FACTOR = 0.08  
