@@ -187,7 +187,7 @@ int main(int argc, char **argv)
     // ---
 
     // Read lab file and create maze walls in webots
-    char lab_filename[1024 * 8] = "C2-lab.xml";
+    char lab_filename[1024 * 8] = "C2-lab3.xml";
     QXmlInputSource *source;
 
     QFile srcFile(lab_filename);
